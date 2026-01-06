@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Feature Flag Admin</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    button { padding: 4px 8px; }
+    input { width: 60px; }
+  </style>
+</head>
+<body>
+
+<h2>Feature Flag Admin</h2>
+
+<table id="features">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Enabled</th>
+      <th>Rollout %</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+async function loadFeatures() {
+  const res = await fetch("/features");
+  const features = await res.json();
+
+  const tbody = document.querySelector("#features tbody");
+  tbody.innerHTML = "";
+
+  features.forEach(f => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${f.name}</td>
+      <td>
+        <input type="checkbox" ${f.enabled ? "checked" : ""} />
+      </td>
+      <td>
+        <input type="number" value="${f.rollout_percentage}" min="0" max="100" />
+      </td>
+      <td>
+        <button>Save</button>
+      </td>
+    `;
+
+    const checkbox = row.querySelector("input[type=checkbox]");
+    const number = row.querySelector("input[type=number]");
+    const button = row.querySelector("button");
+
+    button.onclick = async () => {
+      await fetch(`/features/${f.name}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          enabled: checkbox.checked,
+          rollout_percentage: Number(number.value)
+        })
+      });
+      alert("Updated!");
+    };
+
+    tbody.appendChild(row);
+  });
+}
+
+loadFeatures();
+</script>
+
+</body>
+</html>
