@@ -2,8 +2,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.sql import func
 from database import Base
 
-
-# ---------- USER TABLE ----------
 class User(Base):
     __tablename__ = "users"
 
@@ -12,7 +10,6 @@ class User(Base):
     email = Column(String, unique=True, index=True)
 
 
-# ---------- FEATURE FLAGS TABLE ----------
 class FeatureFlag(Base):
     __tablename__ = "feature_flags"
 
@@ -25,7 +22,6 @@ class FeatureFlag(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
-# ---------- FEATURE LOGS TABLE ----------
 class FeatureLog(Base):
     __tablename__ = "feature_logs"
 
