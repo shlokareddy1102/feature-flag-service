@@ -44,13 +44,11 @@ def get_db():
         db.close()
 
 
-# ---------------- ROOT ----------------
 @app.get("/")
 def root():
     return {"message": "FastAPI is running on my Mac 🚀"}
 
 
-# ---------------- USERS ----------------
 @app.post("/users", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db_user = User(name=user.name, email=user.email)
@@ -60,7 +58,6 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 
-# ---------------- FEATURE CHECK ----------------
 @app.get("/check-feature")
 def check_feature(
     user_id: int,
@@ -93,7 +90,6 @@ def check_feature(
     }
 
 
-# ---------------- ADMIN CRUD ----------------
 @app.post("/features", response_model=FeatureResponse)
 def create_feature(feature: FeatureCreate, db: Session = Depends(get_db)):
     existing = db.query(FeatureFlag).filter(FeatureFlag.name == feature.name).first()
